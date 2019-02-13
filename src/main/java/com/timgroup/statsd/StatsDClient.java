@@ -273,6 +273,50 @@ public interface StatsDClient extends Closeable {
      * @param tags
      *     array of tags to be added to the data
      */
+    void recordExecutionTime(String aspect, double timeInMs, String... tags);
+
+    /**
+     * Records an execution time in milliseconds for the specified named operation.
+     *
+     * <p>This method is a DataDog extension, and may not work with other servers.</p>
+     *
+     * <p>This method is non-blocking and is guaranteed not to throw an exception.</p>
+     *
+     * @param aspect
+     *     the name of the timed operation
+     * @param timeInMs
+     *     the time in milliseconds
+     * @param sampleRate
+     *     percentage of time metric to be sent
+     * @param tags
+     *     array of tags to be added to the data
+     */
+    void recordExecutionTime(String aspect, double timeInMs, double sampleRate, String... tags);
+
+    /**
+     * Convenience method equivalent to {@link #recordExecutionTime(String, double, String[])}.
+     */
+    void time(String aspect, double value, String... tags);
+
+    /**
+     * Convenience method equivalent to {@link #recordExecutionTime(String, double, double, String[])}.
+     */
+    void time(String aspect, double value, double sampleRate, String... tags);
+
+    /**
+     * Records an execution time in milliseconds for the specified named operation.
+     *
+     * <p>This method is a DataDog extension, and may not work with other servers.</p>
+     *
+     * <p>This method is non-blocking and is guaranteed not to throw an exception.</p>
+     *
+     * @param aspect
+     *     the name of the timed operation
+     * @param timeInMs
+     *     the time in milliseconds
+     * @param tags
+     *     array of tags to be added to the data
+     */
     void recordExecutionTime(String aspect, long timeInMs, String... tags);
     
     /**

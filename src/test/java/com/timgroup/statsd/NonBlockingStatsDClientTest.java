@@ -363,6 +363,30 @@ public class NonBlockingStatsDClientTest {
         assertThat(server.messagesReceived(), contains("my.prefix.mytime:123|ms"));
     }
 
+    @Test(timeout=5000L) public void
+    sends_double_timer_to_statsd() {
+        client.recordExecutionTime("mytime", 123.4567890123);
+        server.waitForMessage();
+
+        assertThat(server.messagesReceived(), contains("my.prefix.mytime:123.456789|ms"));
+    }
+
+    @Test(timeout=5000L) public void
+    sends_large_double_timer_to_statsd() {
+        client.recordExecutionTime("mytime", 9876543210.0123456789);
+        server.waitForMessage();
+
+        assertThat(server.messagesReceived(), contains("my.prefix.mytime:9876543210.012346|ms"));
+    }
+
+    @Test(timeout=5000L) public void
+    sends_small_double_timer_to_statsd() {
+        client.recordExecutionTime("mytime", 0.0000011);
+        server.waitForMessage();
+
+        assertThat(server.messagesReceived(), contains("my.prefix.mytime:0.000001|ms"));
+    }
+
     /**
      * A regression test for <a href="https://github.com/indeedeng/java-dogstatsd-client/issues/3">this i18n number formatting bug</a>
      * @throws Exception

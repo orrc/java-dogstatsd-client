@@ -651,6 +651,50 @@ public final class NonBlockingStatsDClient implements StatsDClient {
      *     array of tags to be added to the data
      */
     @Override
+    public void recordExecutionTime(final String aspect, final double timeInMs, final String... tags) {
+        send(new StringBuilder(prefix).append(aspect).append(":").append(NUMBER_FORMATTERS.get().format(timeInMs)).append("|ms").append(tagString(tags)).toString());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void recordExecutionTime(final String aspect, final double timeInMs, final double sampleRate, final String... tags) {
+        if(isInvalidSample(sampleRate)) {
+            return;
+        }
+        send(new StringBuilder(prefix).append(aspect).append(":").append(NUMBER_FORMATTERS.get().format(timeInMs)).append("|ms|@").append(SAMPLE_RATE_FORMATTERS.get().format(sampleRate)).append(tagString(tags)).toString());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void time(final String aspect, final double value, final String... tags) {
+        recordExecutionTime(aspect, value, tags);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void time(final String aspect, final double value, final double sampleRate, final String... tags) {
+        recordExecutionTime(aspect, value, sampleRate, tags);
+    }
+
+    /**
+     * Records an execution time in milliseconds for the specified named operation.
+     *
+     * <p>This method is non-blocking and is guaranteed not to throw an exception.</p>
+     *
+     * @param aspect
+     *     the name of the timed operation
+     * @param timeInMs
+     *     the time in milliseconds
+     * @param tags
+     *     array of tags to be added to the data
+     */
+    @Override
     public void recordExecutionTime(final String aspect, final long timeInMs, final String... tags) {
         send(new StringBuilder(prefix).append(aspect).append(":").append(timeInMs).append("|ms").append(tagString(tags)).toString());
     }
